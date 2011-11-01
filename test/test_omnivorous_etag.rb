@@ -9,13 +9,38 @@ class TestOmnivorousEtag < Test::Unit::TestCase
     end
   end
   
-  class App
+  class RaisingBearer
+    def etag(something)
+      throw(:caught)
+    end
+  end
+  
+  class App < Bearer
     include OmnivorousEtag
+  end
+  
+  class RaisingApp < RaisingBearer
   end
   
   def test_with_string
     app = App.new
     assert_equal "Mw==\n", app.etag(3)
+  end
+  
+  def test_work_on_blank_object_should_just_return
+     o = Object.new
+     class << o; include OmnivorousEtag; end
+     assert_equal "Mw==\n", o.etag(3)
+  end
+  
+  def test_work_on_object_that_supports_super_should_callout_to_super
+     assert_throws(:caught) { RaisingApp.new.etag(3) }
+  end
+  
+  def test_work_on_blank_object_should_just_return
+     o = Object.new
+     class << o; include OmnivorousEtag; end
+     assert_equal "Mw==\n", o.etag(3)
   end
   
   def test_with_float
@@ -66,6 +91,7 @@ class TestOmnivorousEtag < Test::Unit::TestCase
   def test_arbitraty_object_carries_class_name
     a = Arbtrary.new("foo", "bar", "baz")
     another = Another.new("foo", "bar", "baz")
-    assert_not_equal App.new.etag(a), App.new.etag(another)
+    assert_not_equal App.new.etag(a), App.new.etag(another),
+      "Objects of different classes should produce different etags"
   end
 end
