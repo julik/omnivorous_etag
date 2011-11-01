@@ -1,0 +1,8 @@
+.autotest
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/omnivorous_etag
+lib/omnivorous_etag.rb
+test/test_omnivorous_etag.rb
