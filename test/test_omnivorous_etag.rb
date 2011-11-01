@@ -82,14 +82,15 @@ class TestOmnivorousEtag < Test::Unit::TestCase
     assert_equal "TWc9PQo7TVMxdGVTMWliRzluWDJWdWRISjUK\n", App.new.etag(r_newer)
   end
   
-  class Arbtrary < Struct.new(:a,:foo,:bar)
+  
+  class Arbitrary < Struct.new(:a,:foo,:bar)
   end
   
-  class Another < Arbtrary
+  class Another < Arbitrary
   end
   
   def test_arbitraty_object_carries_class_name
-    a = Arbtrary.new("foo", "bar", "baz")
+    a = Arbitrary.new("foo", "bar", "baz")
     another = Another.new("foo", "bar", "baz")
     assert_not_equal App.new.etag(a), App.new.etag(another),
       "Objects of different classes should produce different etags"
